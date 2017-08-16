@@ -1,7 +1,7 @@
 {
-  "name": "express-js-bootstrap",
+  "name": "github-organization-manager",
   "version": "0.1.0",
-  "description": "Kickoff for ExpressJS applications",
+  "description": "Project to manage github repos",
   "engines": {
     "node": "6.11.1",
     "npm": "2.14.2"
@@ -27,16 +27,15 @@
     "node_modules"
   ],
   "main": "app.js",
-  "author": "Michel Agopian <michel.agopian@wolox.com.ar>",
-  "homepage": "https://github.com/Wolox/express-js-bootstrap",
+  "author": "Wolox",
+  "homepage": "https://github.com/Wolox/github-organization-manager",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Wolox/express-js-bootstrap.git"
+    "url": "https://github.com/Wolox/github-organization-manager.git"
   },
   "bugs": {
-    "url": "https://github.com/Wolox/express-js-bootstrap/issues",
-    "email": "michel.agopian@wolox.com.ar"
+    "url": "https://github.com/Wolox/github-organization-manager/issues"
   },
   "dependencies": {
     "bcrypt": "^1.0.1",

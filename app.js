@@ -25,6 +25,12 @@ const init = () => {
   const port = config.common.port || 8080;
   module.exports = app;
 
+  // Views
+  app.set('views', path.join(__dirname, 'app/views'));
+  app.set('view engine', 'pug');
+  app.use(express.static(path.join(__dirname, 'app/public')));
+
+  // Docs
   app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
   // Client must send "Content-Type: application/json" header

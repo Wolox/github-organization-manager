@@ -25,7 +25,8 @@ html
     else if error
       div
         h4 Error: #{error.message}
-        ul
-          each err in error.errors
-            li #{JSON.stringify(err)}
+        if error.errors && error.errors.length
+          ul
+            each err in error.errors
+              li #{JSON.stringify(err)}
       

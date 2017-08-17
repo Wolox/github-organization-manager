@@ -1,5 +1,6 @@
 const GitHubApi = require('github'),
-  config = require('../../config');
+  config = require('../../config'),
+  errors = require('../errors');
 
 const github = new GitHubApi({
   // debug: true,
@@ -93,7 +94,7 @@ exports.protectBranches = settings => {
       )
     ).then(() => repo);
   } else {
-    Promise.reject(/* no branches error */);
+    return Promise.reject(errors.noBranchesSentToProtect);
   }
 };
 

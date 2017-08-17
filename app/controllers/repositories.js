@@ -1,5 +1,6 @@
 const github = require('../services/github'),
-  config = require('../../config');
+  config = require('../../config'),
+  errors = require('../errors');
 
 exports.new = (req, res, next) => {
   res.status(200);
@@ -25,7 +26,7 @@ exports.create = (req, res, next) => {
           privateRepo
         });
       } else {
-        // throw in_private_repos_limit_error
+        return Promise.reject(errors.repoLimitReached);
       }
     })
     .then(repo =>
@@ -56,7 +57,7 @@ exports.create = (req, res, next) => {
     .catch(err => {
       res.status(400);
       res.render('index', {
-        error: JSON.parse(err.message)
+        error: err.internalError ? err : JSON.parse(err.message)
       });
     });
 };

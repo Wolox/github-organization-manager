@@ -1,11 +1,9 @@
-exports.notFound = {
-  statusCode: 404,
-  message: 'Not found'
+exports.noBranchesSentToProtect = {
+  internalError: true,
+  message: 'No branches sent to set as protected'
 };
 
-exports.defaultError = message => {
-  return {
-    statusCode: 500,
-    message
-  };
+exports.repoLimitReached = {
+  internalError: true,
+  message: 'Repositories limit reached'
 };

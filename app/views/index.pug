@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    title
+      | Wolox github organization manager
+    meta(charset='UTF-8')
+    base(href='/')
+  body
+    h1 Wolox github organization manager  
+    h3 Create new repository
+    form(action='/repositories' method='post')
+      div
+        h4 Name
+        input(type='text' name='name')
+      div
+        h4 Private
+        input(type='checkbox' name='private')
+      input(type='submit' value='Submit')
+
+    if link
+      div
+        a(href=link)
+          =name
+        |  repo has been created successfuly !
+    else if error
+      div
+        h4 Error: #{error.message}
+        ul
+          each err in error.errors
+            li #{JSON.stringify(err)}
+      

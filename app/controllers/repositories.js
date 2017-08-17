@@ -2,11 +2,14 @@ const github = require('../services/github'),
   config = require('../../config');
 
 exports.new = (req, res, next) => {
-  const name = req.query.name;
-  const privateRepo = req.query.private === 'true';
+  res.status(200);
+  res.render('index');
+};
+
+exports.create = (req, res, next) => {
+  const name = req.body.name;
+  const privateRepo = !!req.body.private;
   const DEVELOPMENT_BRANCH_NAME = 'development';
-  // const name = req.body.name;
-  // const privateRepo = req.body.private;
 
   Promise.resolve()
     .then(() => {
@@ -44,34 +47,16 @@ exports.new = (req, res, next) => {
       })
     )
     .then(repo => {
-      // debugger;
       res.status(200);
-      res.send(repo);
+      res.render('index', {
+        name: repo.data.name,
+        link: repo.data.html_url
+      });
     })
-    .catch(next);
+    .catch(err => {
+      res.status(400);
+      res.render('index', {
+        error: JSON.parse(err.message)
+      });
+    });
 };
-
-// exports.init = (req, res, next) => {
-//   const name = req.query.name;
-//   const privateRepo = req.query.private === 'true';
-//   // const name = req.body.name;
-//   // const privateRepo = req.body.private;
-//
-//   github.getPrivateReposCount().then(privateRepositoriesCount => {
-//     debugger;
-//     if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
-//       return github.createRepository({
-//         name,
-//         privateRepo
-//       });
-//     }
-//   });
-// };
-//
-// exports.step1 = (req, res, next) => {
-//   github.step1();
-// };
-//
-// exports.step2 = (req, res, next) => {
-//   github.step2(req.query.otp);
-// };

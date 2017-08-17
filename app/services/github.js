@@ -2,6 +2,7 @@ const GitHubApi = require('github'),
   config = require('../../config');
 
 const github = new GitHubApi({
+  // debug: true,
   host: 'api.github.com',
   Promise: require('bluebird'),
   timeout: 5000
@@ -24,6 +25,7 @@ const getReference = settings => {
 exports.createRepository = settings => {
   const name = settings.name;
   const privateRepo = settings.privateRepo;
+  init();
 
   return github.repos.createForOrg({
     auto_init: true,

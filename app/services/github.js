@@ -3,7 +3,7 @@ const GitHubApi = require('github'),
   errors = require('../errors');
 
 const github = new GitHubApi({
-  // debug: true,
+  debug: true,
   host: 'api.github.com',
   Promise: require('bluebird'),
   timeout: 5000
@@ -121,28 +121,30 @@ exports.getPrivateReposCount = (page = 1) => {
     });
 };
 
-// exports.step1 = () => {
-//   return github.authenticate({
-//     type: 'basic',
-//     username: config.common.github.username,
-//     password: config.common.github.password
-//   });
-// };
-//
-// exports.step2 = (otp) => {
-//   github.authorization.create(
-//     {
-//       note: 'wolox github organization manager authorization note',
-//       scopes: ['user', 'public_repo', 'repo', 'repo:status', 'gist'],
-//       headers: {
-//         'X-GitHub-OTP': otp
-//       }
-//     },
-//     function(err, res) {
-//       debugger;
-//       if (res && res.token) {
-//         // save and use res.token as in the Oauth process above from now on
-//       }
-//     }
-//   );
-// };
+/* ------------------------- AUTH ------------------------- */
+
+exports.auth = (username, password, otp) => {
+  return new Promise((resolve, reject) => {
+    github.authenticate({
+      type: 'basic',
+      username,
+      password
+    });
+    github.authorization.create(
+      {
+        note: `wolox github organization manager authorization note ${username}-${otp}`,
+        scopes: ['user', 'public_repo', 'repo', 'repo:status', 'gist'],
+        headers: {
+          'X-GitHub-OTP': otp
+        }
+      },
+      (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.data.token);
+        }
+      }
+    );
+  });
+};

@@ -46,6 +46,7 @@
     "eslint-config-airbnb": "^15.0.1",
     "express": "^4.9.4",
     "github": "https://github.com/mishuagopian/node-github",
+    "jquery": "^3.2.1",
     "jwt-simple": "^0.2.0",
     "morgan": "^1.7.0",
     "pg": "^4.4.6",

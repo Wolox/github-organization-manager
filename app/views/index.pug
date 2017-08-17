@@ -5,28 +5,48 @@ html
       | Wolox github organization manager
     meta(charset='UTF-8')
     base(href='/')
+    link(rel='stylesheet', href='/stylesheets/repositories.css')
+    script(src='/jquery/jquery.min.js')
+    script(src='/javascripts/repositories.js')
   body
-    h1 Wolox github organization manager  
-    h3 Create new repository
-    form(action='/repositories' method='post')
-      div
-        h4 Name
-        input(type='text' name='name')
-      div
-        h4 Private
-        input(type='checkbox' name='private')
-      input(type='submit' value='Submit')
+    h1 Wolox github organization manager
 
-    if link
-      div
-        a(href=link)
-          =name
-        |  repo has been created successfuly !
-    else if error
-      div
-        h4 Error: #{error.message}
-        if error.errors && error.errors.length
-          ul
-            each err in error.errors
-              li #{JSON.stringify(err)}
-      
+    h3.authentication-title Authenticate
+    .authentication-container
+      .authentication-step
+        div
+          h5 Username
+          input.authentication-username(type='text' name='name')
+        div
+          h5 Password
+          input.authentication-password(type='password' name='password')
+        div
+          h5 OTP
+          input.authentication-otp(type='text' name='otp')
+        button.authentication-button
+          | Log in
+
+    .repository-creation-container
+      h3 Create new repository
+      form(action='/repositories' method='post')
+        div
+          h5 Name
+          input(type='text' name='name')
+        div
+          h5 Private
+          input(type='checkbox' name='private')
+        input(type='submit' value='Submit')
+
+      if link
+        div
+          a(href=link)
+            =name
+          |  repo has been created successfuly !
+      else if error
+        div
+          h5 Error: #{error.message}
+          if error.errors && error.errors.length
+            ul
+              each err in error.errors
+                li #{JSON.stringify(err)}
+        

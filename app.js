@@ -26,6 +26,8 @@ const init = () => {
   const port = config.common.port || 8080;
   module.exports = app;
 
+  app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist/`));
+
   // Views
   app.set('views', path.join(__dirname, 'app/views'));
   app.set('view engine', 'pug');

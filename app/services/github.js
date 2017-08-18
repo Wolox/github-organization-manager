@@ -9,10 +9,10 @@ const github = new GitHubApi({
   timeout: 5000
 });
 
-const init = () =>
+const init = token =>
   github.authenticate({
     type: 'oauth',
-    token: config.common.github.token
+    token
   });
 
 const getReference = settings => {
@@ -26,7 +26,8 @@ const getReference = settings => {
 exports.createRepository = settings => {
   const name = settings.name;
   const privateRepo = settings.privateRepo;
-  init();
+  const token = settings.token;
+  init(token);
 
   return github.repos.createForOrg({
     auto_init: true,
@@ -39,7 +40,8 @@ exports.createRepository = settings => {
 exports.createBranchFromMaster = settings => {
   const name = settings.name;
   const repo = settings.repo;
-  init();
+  const token = settings.token;
+  init(token);
 
   return getReference({
     repo,
@@ -59,7 +61,8 @@ exports.createBranchFromMaster = settings => {
 exports.defaultBranch = settings => {
   const name = settings.name;
   const repo = settings.repo;
-  init();
+  const token = settings.token;
+  init(token);
 
   return github.repos.edit({
     default_branch: name,
@@ -72,7 +75,8 @@ exports.defaultBranch = settings => {
 exports.protectBranches = settings => {
   const branches = settings.branches;
   const repo = settings.repo;
-  init();
+  const token = settings.token;
+  init(token);
 
   if (branches && branches.length) {
     return Promise.all(
@@ -98,8 +102,8 @@ exports.protectBranches = settings => {
   }
 };
 
-exports.getPrivateReposCount = (page = 1) => {
-  init();
+exports.getPrivateReposCount = (token, page = 1) => {
+  init(token);
   return github.repos
     .getForOrg({
       org: config.common.github.organization,
@@ -114,7 +118,7 @@ exports.getPrivateReposCount = (page = 1) => {
       );
 
       if (nextLink.indexOf('page=1') === -1) {
-        return exports.getPrivateReposCount(page + 1).then(count => count + privateReposCount);
+        return exports.getPrivateReposCount(token, page + 1).then(count => count + privateReposCount);
       } else {
         return privateReposCount;
       }

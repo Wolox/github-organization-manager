@@ -10,12 +10,13 @@ exports.new = (req, res, next) => {
 exports.create = (req, res, next) => {
   const name = req.body.name;
   const privateRepo = !!req.body.private;
+  const token = req.body.token;
   const DEVELOPMENT_BRANCH_NAME = 'development';
 
   Promise.resolve()
     .then(() => {
       if (privateRepo) {
-        return github.getPrivateReposCount();
+        return github.getPrivateReposCount(token);
       }
       return 0;
     })
@@ -23,7 +24,8 @@ exports.create = (req, res, next) => {
       if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
         return github.createRepository({
           name,
-          privateRepo
+          privateRepo,
+          token
         });
       } else {
         return Promise.reject(errors.repoLimitReached);
@@ -32,32 +34,33 @@ exports.create = (req, res, next) => {
     .then(repo =>
       github.createBranchFromMaster({
         name: DEVELOPMENT_BRANCH_NAME,
-        repo: repo.data.name
+        repo: repo.data.name,
+        token
       })
     )
     .then(repoName =>
       github.protectBranches({
         branches: ['master', DEVELOPMENT_BRANCH_NAME],
-        repo: repoName
+        repo: repoName,
+        token
       })
     )
     .then(repoName =>
       github.defaultBranch({
         name: DEVELOPMENT_BRANCH_NAME,
-        repo: repoName
+        repo: repoName,
+        token
       })
     )
     .then(repo => {
       res.status(200);
-      res.render('index', {
+      res.send({
         name: repo.data.name,
         link: repo.data.html_url
       });
     })
     .catch(err => {
       res.status(400);
-      res.render('index', {
-        error: err.internalError ? err : JSON.parse(err.message)
-      });
+      res.send(err.internalError ? err : JSON.parse(err.message));
     });
 };

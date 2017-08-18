@@ -9,9 +9,9 @@ html
     script(src='/jquery/jquery.min.js')
     script(src='/javascripts/repositories.js')
   body
-    h1 Wolox github organization manager
+    h1.title Wolox github organization manager
 
-    h3.authentication-title Authenticate
+    h3.title Authenticate
     .authentication-container
       .authentication-step
         div
@@ -25,28 +25,21 @@ html
           input.authentication-otp(type='text' name='otp')
         button.authentication-button
           | Log in
+      .authentication-step
+        div
+          h5 Token
+          input.authentication-token(type='text' name='token')
+        button.token-update-button
+          | Update token
 
     .repository-creation-container
       h3 Create new repository
-      form(action='/repositories' method='post')
+      div
         div
           h5 Name
-          input(type='text' name='name')
+          input.repository-name(type='text' name='name')
         div
           h5 Private
-          input(type='checkbox' name='private')
-        input(type='submit' value='Submit')
-
-      if link
-        div
-          a(href=link)
-            =name
-          |  repo has been created successfuly !
-      else if error
-        div
-          h5 Error: #{error.message}
-          if error.errors && error.errors.length
-            ul
-              each err in error.errors
-                li #{JSON.stringify(err)}
-        
+          input.repository-private(type='checkbox' name='private')
+        button.repository-create-button
+          | Create

@@ -125,6 +125,25 @@ exports.getPrivateReposCount = (token, page = 1) => {
     });
 };
 
+exports.defaultTeams = settings => {
+  const repo = settings.repo;
+  const token = settings.token;
+  init(token);
+
+  return Promise.all([
+    github.orgs.addTeamRepo({
+      id: 1615796, // bots
+      org: config.common.github.organization,
+      repo
+    }),
+    github.orgs.addTeamRepo({
+      id: 1458022, // techleaders
+      org: config.common.github.organization,
+      repo
+    })
+  ]).then(() => repo);
+};
+
 /* ------------------------- AUTH ------------------------- */
 
 exports.auth = (username, password, otp) => {

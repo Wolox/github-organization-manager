@@ -46,6 +46,12 @@ exports.create = (req, res, next) => {
       })
     )
     .then(repoName =>
+      github.defaultTeams({
+        repo: repoName,
+        token
+      })
+    )
+    .then(repoName =>
       github.defaultBranch({
         name: DEVELOPMENT_BRANCH_NAME,
         repo: repoName,

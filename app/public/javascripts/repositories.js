@@ -34,38 +34,46 @@ $('document').ready(function() {
   $('.repository-create-button').click(function() {
     var name = $('.repository-name').val();
     var priv = $('.repository-private').val();
+    var tech = $('input[name=tech]:checked').val();
     var token = localStorage[TOKEN];
     var repositorycreationMessages = 'repository-creation-messages';
     var repositoryCreateButton = $(this);
 
-    repositoryCreateButton.attr('disabled', true);
-    $('.' + repositorycreationMessages).remove();
-    $.ajax({
-      method: 'POST',
-      url: '/repositories',
-      data: { name: name, private: priv, token: token }
-    }).always(function() {
-      repositoryCreateButton.attr('disabled', false);
-    }).then(function(res) {
-      $('.repository-creation-container').append(
-        '<div class="' + repositorycreationMessages + '"">' +
-          '<a href="' + res.link + '">' +
-            res.name +
-          '</a> repo has been created successfully!' +
-        '</div>'
-      );
-    }).catch(function(err) {
-      var jsonErr = err.responseJSON;
-      $('.repository-creation-container').append(
-        '<div class="' + repositorycreationMessages + '"">' +
-          '<h5> Error: ' + jsonErr.message +
-          (jsonErr.errors && jsonErr.errors.length ?
-            '<ul>' +
-              jsonErr.errors.map(function (e) { return '<li>' + JSON.stringify(e) + '</li>' }) +
-            '</ul>'
-          : '') +
-        '</div>'
-      );
-    });
+    if (name && tech) {
+      repositoryCreateButton.attr('disabled', true);
+      $('.' + repositorycreationMessages).remove();
+
+      $.ajax({
+        method: 'POST',
+        url: '/repositories',
+        data: {
+          name: name + '-' + tech,
+          private: priv,
+          token: token
+        }
+      }).always(function() {
+        repositoryCreateButton.attr('disabled', false);
+      }).then(function(res) {
+        $('.repository-creation-messages-container').append(
+          '<div class="' + repositorycreationMessages + '"">' +
+            '<a href="' + res.link + '">' +
+              res.name +
+            '</a> repo has been created successfully!' +
+          '</div>'
+        );
+      }).catch(function(err) {
+        var jsonErr = err.responseJSON;
+        $('.repository-creation-messages-container').append(
+          '<div class="' + repositorycreationMessages + '"">' +
+            '<h5> Error: ' + jsonErr.message + '</h5>' +
+            (jsonErr.errors && jsonErr.errors.length ?
+              '<ul>' +
+                jsonErr.errors.map(function (e) { return '<li>' + JSON.stringify(e) + '</li>' }) +
+              '</ul>'
+            : '') +
+          '</div>'
+        );
+      });
+    }
   });
 });

@@ -11,11 +11,15 @@ $('document').ready(function() {
     var username = $('.authentication-username').val();
     var password = $('.authentication-password').val();
     var otp = $('.authentication-otp').val();
+    var authenticationButton = $(this);
 
+    authenticationButton.attr('disabled', true);
     $.ajax({
       method: 'POST',
       url: '/auth',
       data: { username: username, password: password, otp: otp }
+    }).always(function() {
+      authenticationButton.attr('disabled', false);
     }).done(function(token) {
         $('.authentication-token').val(token);
         localStorage.setItem(TOKEN, token);
@@ -32,13 +36,16 @@ $('document').ready(function() {
     var priv = $('.repository-private').val();
     var token = localStorage[TOKEN];
     var repositorycreationMessages = 'repository-creation-messages';
+    var repositoryCreateButton = $(this);
 
+    repositoryCreateButton.attr('disabled', true);
+    $('.' + repositorycreationMessages).remove();
     $.ajax({
       method: 'POST',
       url: '/repositories',
       data: { name: name, private: priv, token: token }
     }).always(function() {
-      $('.' + repositorycreationMessages).remove();
+      repositoryCreateButton.attr('disabled', false);
     }).then(function(res) {
       $('.repository-creation-container').append(
         '<div class="' + repositorycreationMessages + '"">' +

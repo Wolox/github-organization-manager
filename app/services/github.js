@@ -134,12 +134,14 @@ exports.defaultTeams = settings => {
     github.orgs.addTeamRepo({
       id: 1615796, // bots
       org: config.common.github.organization,
-      repo
+      repo,
+      permission: 'push'
     }),
     github.orgs.addTeamRepo({
       id: 1458022, // techleaders
       org: config.common.github.organization,
-      repo
+      repo,
+      permission: 'admin'
     })
   ]).then(() => repo);
 };

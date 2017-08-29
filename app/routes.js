@@ -3,7 +3,7 @@ const auth = require('./controllers/auth'),
 
 exports.init = app => {
   app.get('/repositories', [], repositories.new);
-  app.post('/repositories', [], repositories.create);
+  app.post('/api/repositories', [], repositories.create);
 
   app.post('/auth', [], auth.init);
 };

@@ -45,7 +45,7 @@ $('document').ready(function() {
 
       $.ajax({
         method: 'POST',
-        url: '/repositories',
+        url: '/api/repositories',
         data: {
           name: name + '-' + tech,
           private: priv,

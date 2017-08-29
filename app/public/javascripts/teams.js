@@ -28,27 +28,6 @@ $('document').ready(function() {
   var addTeamButton = $('.add-team-button');
   var teamsContainer = addTeamButton.prev();
 
-
-  var createTeamOptions = function (teams) {
-    teams.forEach(function(team) {
-      var teamContainer = $('<div class="team-container"></div>');
-      teamContainer.append('<input type="checkbox" value="' + team.id + '" id="' + team.id + '">');
-      teamContainer.append('<label for="' + team.id + '">' + team.name + '</label>');
-      teamsContainer.append(teamContainer);
-    });
-  }
-
-  $('.teams-filter').on('input', debounce(function () {
-    teamsContainer.empty();
-    var val = this.value;
-    var teamsToShow = val
-      ? teams.filter(function(team) {
-        return team.name.indexOf(val) !== -1
-      })
-      : teams;
-    createTeamOptions(teamsToShow);
-  }, 150));
-
   $.ajax({
     method: 'GET',
     url: '/api/teams',
@@ -62,71 +41,47 @@ $('document').ready(function() {
     createTeamOptions(res.teams);
   });
 
-  $('.create-team-button').click(function() {
+  var createTeamOptions = function (teams) {
+    teams.forEach(function(team) {
+      var teamContainer = $('<div class="team-container"></div>');
+      teamContainer.append('<input type="checkbox" value="' + team.id + '" id="' + team.id + '">');
+      teamContainer.append('<label for="' + team.id + '">' + team.name + '</label>');
+      teamsContainer.append(teamContainer);
+    });
+  }
+
+  var teamsFilterInput = $('.teams-filter');
+  teamsFilterInput.on('input', debounce(function () {
+    teamsContainer.empty();
+    var val = this.value;
+    var teamsToShow = val
+      ? teams.filter(function(team) {
+        return team.name.indexOf(val) !== -1
+      })
+      : teams;
+    createTeamOptions(teamsToShow);
+  }, 150));
+
+  var createTeamButton = $('.create-team-button');
+  createTeamButton.click(function() {
     var name = $('.team-name').val();
-    var teamManagerGithubUser = $('.tm-user').val();
     var token = localStorage[TOKEN];
+    createTeamButton.attr('disabled', true);
     $.ajax({
       method: 'POST',
       url: '/api/teams',
       data: {
         name: name,
-        teamManagerGithubUser: teamManagerGithubUser,
         token: token
       }
+    }).always(function(resp) {
+      createTeamButton.attr('disabled', false);
     }).then(function(resp) {
-      console.log('resp');
-      console.log(resp);
+      teams.push(resp.team.data);
+      teamsFilterInput.val('');
+      createTeamOptions(teams);
+      $.growl.notice({ message: 'Team creado!' });
     }).catch(function(err) {
-      console.log('err');
-      console.log(err);
+      $.growl.error({ message: 'Error al crear el team. El nombre ya está en uso?' });
     });
   });
-
-  //
-  // $('.repository-create-button').click(function() {
-  //   var name = $('.repository-name').val();
-  //   var priv = $('.repository-private').val();
-  //   var tech = $('input[name=tech]:checked').val();
-  //   var token = localStorage[TOKEN];
-  //   var repositorycreationMessages = 'repository-creation-messages';
-  //   var repositoryCreateButton = $(this);
-  //
-  //   if (name && tech) {
-  //     repositoryCreateButton.attr('disabled', true);
-  //     $('.' + repositorycreationMessages).remove();
-  //
-  //     $.ajax({
-  //       method: 'POST',
-  //       url: '/api/repositories',
-  //       data: {
-  //         name: name + '-' + tech,
-  //         private: priv,
-  //         token: token
-  //       }
-  //     }).always(function() {
-  //       repositoryCreateButton.attr('disabled', false);
-  //     }).then(function(res) {
-  //       $('.repository-creation-messages-container').append(
-  //         '<div class="' + repositorycreationMessages + '"">' +
-  //           '<a href="' + res.link + '">' +
-  //             res.name +
-  //           '</a> repo has been created successfully!' +
-  //         '</div>'
-  //       );
-  //     }).catch(function(err) {
-  //       var jsonErr = err.responseJSON;
-  //       $('.repository-creation-messages-container').append(
-  //         '<div class="' + repositorycreationMessages + '"">' +
-  //           '<h5> Error: ' + jsonErr.message + '</h5>' +
-  //           (jsonErr.errors && jsonErr.errors.length ?
-  //             '<ul>' +
-  //               jsonErr.errors.map(function (e) { return '<li>' + JSON.stringify(e) + '</li>' }) +
-  //             '</ul>'
-  //           : '') +
-  //         '</div>'
-  //       );
-  //     });
-  //   }
-  // });
-});

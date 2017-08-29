@@ -38,15 +38,15 @@ exports.create = (req, res, next) => {
 };
 
 exports.addTeamToRepo = (req, res, next) => {
-  const name = req.body.teamId;
-  const teamManagerGithubUser = req.body.teamManagerGithubUser;
+  const teamId = req.params.teamId;
+  const repoName = req.params.repo;
   const token = req.body.token;
 
   github
-    .createTeam({ name, teamManagerGithubUser })
-    .then(teamName => {
+    .addTeamToRepo(teamId, repoName)
+    .then(result => {
       res.status(200);
-      res.send({ name: teamName });
+      res.send({ result });
     })
     .catch(err => {
       res.status(400);

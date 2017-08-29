@@ -8,6 +8,7 @@ exports.init = app => {
   app.get('/teams', [], teams.new);
   app.get('/api/teams', [], teams.index);
   app.post('/api/teams', [], teams.create);
+  app.post('/api/teams/:teamId/:repo', [], teams.addTeamToRepo);
 
   app.post('/auth', [], auth.init);
 };

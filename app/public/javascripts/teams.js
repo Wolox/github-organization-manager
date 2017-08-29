@@ -44,7 +44,7 @@ $('document').ready(function() {
   var createTeamOptions = function (teams) {
     teams.forEach(function(team) {
       var teamContainer = $('<div class="team-container"></div>');
-      teamContainer.append('<input type="checkbox" value="' + team.id + '" id="' + team.id + '">');
+      teamContainer.append('<input type="checkbox" value="' + team.name + '" id="' + team.id + '">');
       teamContainer.append('<label for="' + team.id + '">' + team.name + '</label>');
       teamsContainer.append(teamContainer);
     });
@@ -64,9 +64,11 @@ $('document').ready(function() {
 
   var createTeamButton = $('.create-team-button');
   createTeamButton.click(function() {
+    createTeamButton.attr('disabled', true);
+
     var name = $('.team-name').val();
     var token = localStorage[TOKEN];
-    createTeamButton.attr('disabled', true);
+
     $.ajax({
       method: 'POST',
       url: '/api/teams',
@@ -85,3 +87,27 @@ $('document').ready(function() {
       $.growl.error({ message: 'Error al crear el team. El nombre ya está en uso?' });
     });
   });
+
+  var addTeamButton = $('.add-team-button')
+  addTeamButton.click(function() {
+    addTeamButton.attr('disabled', true);
+
+    var repositoryName = $('.team-target-repo').val();
+    var token = localStorage[TOKEN];
+    var teamIds = $('input[type="checkbox"]:checked').map((index, teamInput) => ({ id: teamInput.id, name: teamInput.value }));
+
+    teamIds.each((index, team) => {
+      $.ajax({
+        method: 'POST',
+        url: '/api/teams/' + team.id + '/' + repositoryName,
+        data: { token: token }
+      }).always(function(resp) {
+        addTeamButton.attr('disabled', false);
+      }).then(function(resp) {
+        $.growl.notice({ message: team.name + ' agregado a ' + repositoryName });
+      }).catch(function(err) {
+        $.growl.error({ message: 'Error al agregar ' + team.name + ' a ' + repositoryName });
+      });
+    })
+  });
+});

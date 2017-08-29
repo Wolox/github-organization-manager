@@ -154,6 +154,38 @@ exports.defaultTeams = settings => {
   ]).then(() => repo);
 };
 
+exports.createTeam = settings =>
+  github.orgs.createTeam({
+    org: config.common.github.organization,
+    name: settings.name,
+    maintainers: [settings.teamManagerGithubUser]
+  });
+
+exports.addTeamToRepo = (teamId, repo) =>
+  github.orgs.addTeamRepo({
+    id: teamId,
+    org: config.common.github.organization,
+    repo,
+    permission: 'push'
+  });
+
+exports.getTeams = (token, page = 1) => {
+  init(token);
+  return github.orgs
+    .getTeams({
+      org: config.common.github.organization,
+      per_page: 100,
+      page
+    })
+    .then(response => {
+      if (shouldFetchAnotherPage(response)) {
+        return exports.getPrivateRepos(token, page + 1).then(arr => arr.concat(response.data));
+      } else {
+        return response.data;
+      }
+    });
+};
+
 /* ------------------------- AUTH ------------------------- */
 
 exports.auth = (username, password, otp) => {

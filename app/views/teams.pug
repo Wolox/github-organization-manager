@@ -1,0 +1,28 @@
+extends base.pug
+
+block headSripts
+  link(rel='stylesheet', href='/stylesheets/teams.css')
+  script(src='/javascripts/teams.js')
+
+block content
+  .container
+    div
+      h3.title Create new team
+      div
+        h5 Team name
+        input(type='text' name='name')
+      div
+        h5 TM github user
+        input(type='text' name='teamManagerGithubUser')
+      button.button.create-button
+        | Create
+    div
+      h3.title Add team to repository
+      div
+        h5 Repository name
+        input(type='text' name='name')
+      h5.teams-title Teams (Loading...)
+      input.teams-filter(type="text" placeholder="Filter")
+      div.teams-container
+      button.button.add-team-button(disabled)
+        | Add

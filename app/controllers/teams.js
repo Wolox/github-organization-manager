@@ -53,3 +53,21 @@ exports.addTeamToRepo = (req, res, next) => {
       res.send(err.internalError ? err : JSON.parse(err.message));
     });
 };
+
+exports.addMemberToTeam = (req, res, next) => {
+  const teamId = req.params.teamId;
+  const githubUser = req.params.username;
+  const token = req.body.token;
+  const maintainer = req.body.maintainer;
+
+  github
+    .addMemberToTeam(teamId, githubUser, maintainer)
+    .then(result => {
+      res.status(200);
+      res.send({ result });
+    })
+    .catch(err => {
+      res.status(400);
+      res.send(err.internalError ? err : JSON.parse(err.message));
+    });
+};

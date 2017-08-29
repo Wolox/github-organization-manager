@@ -168,6 +168,13 @@ exports.addTeamToRepo = (teamId, repo) =>
     permission: 'push'
   });
 
+exports.addMemberToTeam = (teamId, username, maintainer = false) =>
+  github.orgs.addTeamMembership({
+    id: teamId,
+    username,
+    role: maintainer ? 'maintainer' : 'member'
+  });
+
 exports.getTeams = (token, page = 1) => {
   init(token);
   return github.orgs

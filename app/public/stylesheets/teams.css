@@ -13,3 +13,7 @@
 .teams-filter {
   display: block;
 }
+
+.container > div {
+  align-self: flex-start;
+}

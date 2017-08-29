@@ -103,6 +103,10 @@ exports.protectBranches = settings => {
 };
 
 exports.getPrivateReposCount = (token, page = 1) => {
+  return exports.getPrivateRepos(token, page).then(repos => repos.length);
+};
+
+exports.getPrivateRepos = (token, page = 1) => {
   init(token);
   return github.repos
     .getForOrg({
@@ -111,16 +115,16 @@ exports.getPrivateReposCount = (token, page = 1) => {
       page
     })
     .then(repos => {
-      const privateReposCount = repos.data.reduce((sum, repo) => sum + (repo.fork ? 0 : 1), 0);
+      const privateRepos = repos.data.reduce((arr, repo) => (repo.fork ? arr : arr.concat(repo)), []);
       const nextLink = repos.meta.link.substring(
         repos.meta.link.indexOf('<') + 1,
         repos.meta.link.indexOf('>')
       );
 
       if (nextLink.indexOf('page=1') === -1) {
-        return exports.getPrivateReposCount(token, page + 1).then(count => count + privateReposCount);
+        return exports.getPrivateRepos(token, page + 1).then(arr => arr.concat(privateRepos));
       } else {
-        return privateReposCount;
+        return privateRepos;
       }
     });
 };

@@ -23,6 +23,14 @@ const getReference = settings => {
   });
 };
 
+const shouldFetchAnotherPage = response => {
+  const nextLink = response.meta.link.substring(
+    response.meta.link.indexOf('<') + 1,
+    response.meta.link.indexOf('>')
+  );
+  return nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1;
+};
+
 exports.createRepository = settings => {
   const name = settings.name;
   const privateRepo = settings.privateRepo;
@@ -117,12 +125,7 @@ exports.getPrivateRepos = (token, page = 1) => {
     })
     .then(repos => {
       const privateRepos = repos.data.reduce((arr, repo) => (repo.fork ? arr : arr.concat(repo)), []);
-      const nextLink = repos.meta.link.substring(
-        repos.meta.link.indexOf('<') + 1,
-        repos.meta.link.indexOf('>')
-      );
-
-      if (nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1) {
+      if (shouldFetchAnotherPage(repos)) {
         return exports.getPrivateRepos(token, page + 1).then(arr => arr.concat(privateRepos));
       } else {
         return privateRepos;

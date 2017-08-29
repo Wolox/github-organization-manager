@@ -157,8 +157,7 @@ exports.defaultTeams = settings => {
 exports.createTeam = settings =>
   github.orgs.createTeam({
     org: config.common.github.organization,
-    name: settings.name,
-    maintainers: [settings.teamManagerGithubUser]
+    name: settings.name
   });
 
 exports.addTeamToRepo = (teamId, repo) =>

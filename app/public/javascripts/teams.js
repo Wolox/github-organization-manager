@@ -62,6 +62,27 @@ $('document').ready(function() {
     createTeamOptions(res.teams);
   });
 
+  $('.create-team-button').click(function() {
+    var name = $('.team-name').val();
+    var teamManagerGithubUser = $('.tm-user').val();
+    var token = localStorage[TOKEN];
+    $.ajax({
+      method: 'POST',
+      url: '/api/teams',
+      data: {
+        name: name,
+        teamManagerGithubUser: teamManagerGithubUser,
+        token: token
+      }
+    }).then(function(resp) {
+      console.log('resp');
+      console.log(resp);
+    }).catch(function(err) {
+      console.log('err');
+      console.log(err);
+    });
+  });
+
   //
   // $('.repository-create-button').click(function() {
   //   var name = $('.repository-name').val();

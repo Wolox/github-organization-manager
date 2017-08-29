@@ -23,11 +23,10 @@ exports.index = (req, res, next) => {
 
 exports.create = (req, res, next) => {
   const name = req.body.name;
-  const teamManagerGithubUser = req.body.teamManagerGithubUser;
   const token = req.body.token;
 
   github
-    .createTeam({ name, teamManagerGithubUser })
+    .createTeam({ name })
     .then(team => {
       res.status(200);
       res.send({ team });

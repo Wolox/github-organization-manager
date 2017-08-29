@@ -4,7 +4,7 @@ const github = require('../services/github'),
 
 exports.new = (req, res, next) => {
   res.status(200);
-  res.render('index');
+  res.render('repositories');
 };
 
 exports.create = (req, res, next) => {

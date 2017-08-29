@@ -1,0 +1,73 @@
+extends base.pug
+
+block headSripts
+  link(rel='stylesheet', href='/stylesheets/repositories.css')
+  script(src='/javascripts/repositories.js')
+
+block content
+  h3.title Create new repository
+  p.clarification.title
+    | Project name and tech are required. Submitting the form without them will have no effect.
+  .container
+    .repository-creation-container-column
+      div
+        h5 Project name
+        input.repository-name(type='text' name='name')
+      div
+        h5 Private
+        input.repository-private(type='checkbox' name='private' checked=true)
+    .repository-creation-container-column
+      div
+        input(type='radio' name='tech' value='android')
+        | Android
+      div
+        input(type='radio' name='tech' value='ios')
+        | iOS
+      div
+        input(type='radio' name='tech' value='react-native')
+        | React Native
+    .repository-creation-container-column
+      div
+        input(type='radio' name='tech' value='frontend')
+        | Frontend
+      div
+        input(type='radio' name='tech' value='react')
+        | React
+      div
+        input(type='radio' name='tech' value='angular')
+        | Angular
+      div
+        input(type='radio' name='tech' value='landing')
+        | Landing
+      div
+        input(type='radio' name='tech' value='dashboard')
+        | Dashboard
+    .repository-creation-container-column
+      div
+        input(type='radio' name='tech' value='backend')
+        | Backend
+      div
+        input(type='radio' name='tech' value='rails')
+        | Rails
+      div
+        input(type='radio' name='tech' value='node')
+        | Node
+      div
+        input(type='radio' name='tech' value='api')
+        | API
+      div
+        input(type='radio' name='tech' value='lambdas')
+        | Lambdas
+      div
+        input(type='radio' name='tech' value='.net')
+        | NET
+    .repository-creation-container-column
+      div
+        input(type='radio' name='tech' value='infra')
+        | Infra
+      div
+        input(type='radio' name='tech' value='iot')
+        | IOT
+  button.button.create-button
+    | Create
+  .repository-creation-messages-container

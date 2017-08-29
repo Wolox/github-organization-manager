@@ -112,6 +112,7 @@ exports.getPrivateRepos = (token, page = 1) => {
     .getForOrg({
       org: config.common.github.organization,
       type: 'private',
+      per_page: 100,
       page
     })
     .then(repos => {
@@ -121,7 +122,7 @@ exports.getPrivateRepos = (token, page = 1) => {
         repos.meta.link.indexOf('>')
       );
 
-      if (nextLink.indexOf('page=1') === -1) {
+      if (nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1) {
         return exports.getPrivateRepos(token, page + 1).then(arr => arr.concat(privateRepos));
       } else {
         return privateRepos;

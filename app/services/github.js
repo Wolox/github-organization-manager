@@ -31,11 +31,16 @@ const shouldFetchAnotherPage = response => {
   return nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1;
 };
 
-exports.createRepository = settings => {
+const authenticated = wrappedFunction => {
+  return (token, ...args) => {
+    init(token);
+    return wrappedFunction(...args);
+  };
+};
+
+exports.createRepository = authenticated(settings => {
   const name = settings.name;
   const privateRepo = settings.privateRepo;
-  const token = settings.token;
-  init(token);
 
   return github.repos.createForOrg({
     auto_init: true,
@@ -43,13 +48,11 @@ exports.createRepository = settings => {
     name,
     private: !!privateRepo
   });
-};
+});
 
-exports.createBranchFromMaster = settings => {
+exports.createBranchFromMaster = authenticated(settings => {
   const name = settings.name;
   const repo = settings.repo;
-  const token = settings.token;
-  init(token);
 
   return getReference({
     repo,
@@ -64,13 +67,11 @@ exports.createBranchFromMaster = settings => {
       })
       .then(() => repo)
   );
-};
+});
 
-exports.defaultBranch = settings => {
+exports.defaultBranch = authenticated(settings => {
   const name = settings.name;
   const repo = settings.repo;
-  const token = settings.token;
-  init(token);
 
   return github.repos.edit({
     default_branch: name,
@@ -78,13 +79,11 @@ exports.defaultBranch = settings => {
     name: repo,
     repo
   });
-};
+});
 
-exports.protectBranches = settings => {
+exports.protectBranches = authenticated(settings => {
   const branches = settings.branches;
   const repo = settings.repo;
-  const token = settings.token;
-  init(token);
 
   if (branches && branches.length) {
     return Promise.all(
@@ -108,7 +107,7 @@ exports.protectBranches = settings => {
   } else {
     return Promise.reject(errors.noBranchesSentToProtect);
   }
-};
+});
 
 exports.getPrivateReposCount = (token, page = 1) => {
   return exports.getPrivateRepos(token, page).then(repos => repos.length);
@@ -133,10 +132,8 @@ exports.getPrivateRepos = (token, page = 1) => {
     });
 };
 
-exports.defaultTeams = settings => {
+exports.defaultTeams = authenticated(settings => {
   const repo = settings.repo;
-  const token = settings.token;
-  init(token);
 
   return Promise.all([
     github.orgs.addTeamRepo({
@@ -152,28 +149,31 @@ exports.defaultTeams = settings => {
       permission: 'admin'
     })
   ]).then(() => repo);
-};
+});
 
-exports.createTeam = settings =>
+exports.createTeam = authenticated(settings =>
   github.orgs.createTeam({
     org: config.common.github.organization,
     name: settings.name
-  });
+  })
+);
 
-exports.addTeamToRepo = (teamId, repo) =>
+exports.addTeamToRepo = authenticated(settings =>
   github.orgs.addTeamRepo({
-    id: teamId,
+    id: settings.teamId,
     org: config.common.github.organization,
-    repo,
+    repo: settings.repo,
     permission: 'push'
-  });
+  })
+);
 
-exports.addMemberToTeam = (teamId, username, maintainer = false) =>
+exports.addMemberToTeam = authenticated(settings =>
   github.orgs.addTeamMembership({
-    id: teamId,
-    username,
-    role: maintainer ? 'maintainer' : 'member'
-  });
+    id: settings.teamId,
+    username: settings.username,
+    role: settings.maintainer ? 'maintainer' : 'member'
+  })
+);
 
 exports.getTeams = (token, page = 1) => {
   init(token);
@@ -185,7 +185,7 @@ exports.getTeams = (token, page = 1) => {
     })
     .then(response => {
       if (shouldFetchAnotherPage(response)) {
-        return exports.getPrivateRepos(token, page + 1).then(arr => arr.concat(response.data));
+        return exports.getTeams(token, page + 1).then(arr => arr.concat(response.data));
       } else {
         return response.data;
       }

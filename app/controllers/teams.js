@@ -9,6 +9,7 @@ exports.new = (req, res, next) => {
 
 exports.index = (req, res, next) => {
   const token = req.query.token;
+
   github
     .getTeams(token)
     .then(teams => {
@@ -22,11 +23,10 @@ exports.index = (req, res, next) => {
 };
 
 exports.create = (req, res, next) => {
-  const name = req.body.name;
-  const token = req.body.token;
+  const { name, token } = req.body;
 
   github
-    .createTeam({ name })
+    .createTeam(token, { name })
     .then(team => {
       res.status(200);
       res.send({ team });
@@ -38,12 +38,10 @@ exports.create = (req, res, next) => {
 };
 
 exports.addTeamToRepo = (req, res, next) => {
-  const teamId = req.params.teamId;
-  const repoName = req.params.repo;
-  const token = req.body.token;
+  const { teamId, repo } = req.params;
 
   github
-    .addTeamToRepo(teamId, repoName)
+    .addTeamToRepo(req.body.token, { teamId, repo })
     .then(result => {
       res.status(200);
       res.send({ result });
@@ -55,13 +53,11 @@ exports.addTeamToRepo = (req, res, next) => {
 };
 
 exports.addMemberToTeam = (req, res, next) => {
-  const teamId = req.params.teamId;
-  const githubUser = req.params.username;
-  const token = req.body.token;
-  const maintainer = req.body.maintainer;
+  const { teamId, username } = req.params;
+  const { token, maintainer } = req.body;
 
   github
-    .addMemberToTeam(teamId, githubUser, maintainer)
+    .addMemberToTeam(token, { teamId, username, maintainer })
     .then(result => {
       res.status(200);
       res.send({ result });

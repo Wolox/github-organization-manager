@@ -171,7 +171,7 @@ exports.addMemberToTeam = authenticated(settings =>
   github.orgs.addTeamMembership({
     id: settings.teamId,
     username: settings.username,
-    role: settings.maintainer ? 'maintainer' : 'member'
+    role: settings.maintainer === 'false' ? 'member' : 'maintainer'
   })
 );
 

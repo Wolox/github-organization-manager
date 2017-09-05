@@ -5,7 +5,7 @@ $('document').ready(function() {
 
   $('.repository-create-button').click(function() {
     var name = $('.repository-name').val();
-    var priv = $('.repository-private').val();
+    var priv = $('.repository-private').is(':checked');
     var tech = $('input[name=tech]:checked').val();
     var token = localStorage[TOKEN];
     var repositorycreationMessages = 'repository-creation-messages';

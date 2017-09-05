@@ -7,6 +7,13 @@ exports.new = (req, res, next) => {
   res.render('repositories');
 };
 
+exports.getPrivate = (req, res, next) => {
+  github.getPrivateRepos(req.query.token).then(repositories => {
+    res.status(200);
+    res.send({ repositories });
+  });
+};
+
 exports.create = (req, res, next) => {
   const name = req.body.name;
   const privateRepo = req.body.private !== 'false';

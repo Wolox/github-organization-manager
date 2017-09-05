@@ -5,6 +5,12 @@ block headSripts
   script(src='/javascripts/repositories.js')
 
 block content
+
+  h3.title.private-repos-title Private repositories
+  .container.private-repositories-container
+    button.button.repositories-fetch
+      | Fetch
+
   h3.title Create new repository
   p.clarification.title
     | Project name and tech are required. Submitting the form without them will have no effect.

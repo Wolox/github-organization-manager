@@ -14,6 +14,30 @@ $('document').ready(function() {
     privateCheckbox.prop('disabled', this.checked);
   });
 
+  var fetchRepositoriesButton = $('.repositories-fetch');
+  fetchRepositoriesButton.on('click', function() {
+    fetchRepositoriesButton.attr('disabled', true);
+    var token = localStorage[TOKEN];
+    $.ajax({
+      method: 'GET',
+      url: '/api/repositories/private',
+      data: { token: token }
+    }).always(function() {
+      fetchRepositoriesButton.attr('disabled', false);
+    }).then(function(res) {
+      var repositoriesContainer = fetchRepositoriesButton.parent();
+      repositoriesContainer.empty();
+      repositoriesContainer.append('<ul></ul>');
+      var repoList = repositoriesContainer.children();
+      res.repositories.forEach(function(repo) {
+        repoList.append('<li>' + repo.name + '</li>');
+      });
+      $('.private-repos-title').text(
+        $('.private-repos-title').text() + ' (' + res.repositories.length + ')'
+      );
+    })
+  });
+
   $('.repository-create-button').click(function() {
     var name = $('.repository-name').val();
     var priv = $('.repository-private').is(':checked');

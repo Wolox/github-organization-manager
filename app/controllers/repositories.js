@@ -9,7 +9,7 @@ exports.new = (req, res, next) => {
 
 exports.create = (req, res, next) => {
   const name = req.body.name;
-  const privateRepo = !!req.body.private;
+  const privateRepo = req.body.private !== 'false';
   const token = req.body.token;
   const DEVELOPMENT_BRANCH_NAME = 'development';
 

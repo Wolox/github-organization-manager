@@ -46,7 +46,7 @@ exports.createRepository = authenticated(settings => {
     auto_init: true,
     org: config.common.github.organization,
     name,
-    private: !!privateRepo
+    private: privateRepo
   });
 });
 

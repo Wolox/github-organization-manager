@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    title
+      | Wolox github organization manager
+    meta(charset='UTF-8')
+    base(href='/')
+    link(rel='stylesheet', href='/stylesheets/base.css')
+    link(rel='stylesheet', href='/jquery-growl/stylesheets/jquery.growl.css')
+    script(src='/jquery/jquery.min.js')
+    script(src='/jquery-growl/javascripts/jquery.growl.js')
+    script(src='/javascripts/base.js')
+    block headSripts
+  body.body
+    h1.title Wolox github organization manager
+
+    h3.title Authenticate
+    .authentication-container
+      .authentication-step
+        div
+          h5 Username
+          input.authentication-username(type='text' name='username')
+        div
+          h5 Password
+          input.authentication-password(type='password' name='password')
+        div
+          h5 OTP
+          input.authentication-otp(type='text' name='otp')
+        button.button.authentication-button
+          | Log in
+      .authentication-step
+        div
+          h5 Token
+          input.authentication-token(type='text' name='token')
+        button.button.token-update-button
+          | Update token
+
+    block content

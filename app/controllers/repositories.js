@@ -4,7 +4,7 @@ const github = require('../services/github'),
 
 exports.new = (req, res, next) => {
   res.status(200);
-  res.render('index');
+  res.render('repositories');
 };
 
 exports.create = (req, res, next) => {
@@ -22,40 +22,32 @@ exports.create = (req, res, next) => {
     })
     .then(privateRepositoriesCount => {
       if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
-        return github.createRepository({
-          name,
-          privateRepo,
-          token
-        });
+        return github.createRepository(token, { name, privateRepo });
       } else {
         return Promise.reject(errors.repoLimitReached);
       }
     })
     .then(repo =>
-      github.createBranchFromMaster({
+      github.createBranchFromMaster(token, {
         name: DEVELOPMENT_BRANCH_NAME,
-        repo: repo.data.name,
-        token
+        repo: repo.data.name
       })
     )
     .then(repoName =>
-      github.protectBranches({
+      github.protectBranches(token, {
         branches: ['master', DEVELOPMENT_BRANCH_NAME],
-        repo: repoName,
-        token
+        repo: repoName
       })
     )
     .then(repoName =>
-      github.defaultTeams({
-        repo: repoName,
-        token
+      github.defaultTeams(token, {
+        repo: repoName
       })
     )
     .then(repoName =>
-      github.defaultBranch({
+      github.defaultBranch(token, {
         name: DEVELOPMENT_BRANCH_NAME,
-        repo: repoName,
-        token
+        repo: repoName
       })
     )
     .then(repo => {

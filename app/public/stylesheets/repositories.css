@@ -1,54 +1,5 @@
-.body {
-  display: flex;
-  flex-direction: column;
-}
-
-.authentication-container {
-  display: flex;
-}
-
-.authentication-step {
-  align-items: center;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.button {
-  margin-top: 25px;
-}
-
-.title {
-  text-align: center;
-}
-
-.repository-creation-container {
-  align-items: center;
-  align-self: center;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: center;
-  margin: 10px;
-  width: 80%;
-}
-
-.repository-creation-clarification {
-  color: gray;
-  font-size: 12px;
-  font-style: italic;
-  margin: 0;
-}
-
 .repository-creation-container-column {
   flex-grow: 1;
-}
-
-.repository-create-button {
-  align-self: center;
-  margin-top: 0;
-  width: 50px;
 }
 
 .repository-creation-messages {
@@ -56,8 +7,4 @@
   display: flex;
   flex-direction: column;
   margin: 10px;
-}
-
-h5 {
-  margin-bottom: 0;
 }

@@ -27,6 +27,7 @@ const init = () => {
   module.exports = app;
 
   app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist/`));
+  app.use('/jquery-growl', express.static(`${__dirname}/node_modules/jquery.growl/`));
 
   // Views
   app.set('views', path.join(__dirname, 'app/views'));

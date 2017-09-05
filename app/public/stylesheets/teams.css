@@ -1,0 +1,19 @@
+.team-container {
+  display: inline-block;
+  margin: 4px;
+}
+
+.teams-container {
+  max-height: 100px;
+  overflow: auto;
+  margin: 10px;
+  border: 1px solid;
+}
+
+.teams-filter {
+  display: block;
+}
+
+.container > div {
+  align-self: flex-start;
+}

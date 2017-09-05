@@ -10,18 +10,21 @@ exports.new = (req, res, next) => {
 exports.create = (req, res, next) => {
   const name = req.body.name;
   const privateRepo = req.body.private !== 'false';
+  const forkedRepo = req.body.fork !== 'false';
   const token = req.body.token;
   const DEVELOPMENT_BRANCH_NAME = 'development';
 
   Promise.resolve()
     .then(() => {
-      if (privateRepo) {
+      if (privateRepo && !forkedRepo) {
         return github.getPrivateReposCount(token);
       }
       return 0;
     })
     .then(privateRepositoriesCount => {
-      if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
+      if (forkedRepo) {
+        return Promise.resolve({ data: { name } });
+      } else if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
         return github.createRepository(token, { name, privateRepo });
       } else {
         return Promise.reject(errors.repoLimitReached);

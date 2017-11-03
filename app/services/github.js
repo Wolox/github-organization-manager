@@ -137,6 +137,12 @@ exports.defaultTeams = authenticated(settings => {
 
   return Promise.all([
     github.orgs.addTeamRepo({
+      id: 2543535, // calidad
+      org: config.common.github.organization,
+      repo,
+      permission: 'pull'
+    }),
+    github.orgs.addTeamRepo({
       id: 1615796, // bots
       org: config.common.github.organization,
       repo,

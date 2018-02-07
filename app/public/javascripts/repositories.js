@@ -56,6 +56,7 @@ $('document').ready(function() {
         url: '/api/repositories',
         data: {
           name: fork ? name : name + '-' + tech,
+          topic: tech,
           private: priv,
           fork: fork,
           token: token

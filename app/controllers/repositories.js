@@ -16,6 +16,7 @@ exports.getPrivate = (req, res, next) => {
 
 exports.create = (req, res, next) => {
   const name = req.body.name;
+  const topic = req.body.topic;
   const privateRepo = req.body.private !== 'false';
   const forkedRepo = req.body.fork !== 'false';
   const token = req.body.token;
@@ -32,7 +33,7 @@ exports.create = (req, res, next) => {
       if (forkedRepo) {
         return Promise.resolve({ data: { name } });
       } else if (privateRepositoriesCount < config.common.github.private_repositories_limit) {
-        return github.createRepository(token, { name, privateRepo });
+        return github.createRepository(token, { name, privateRepo, topic });
       } else {
         return Promise.reject(errors.repoLimitReached);
       }
@@ -41,6 +42,12 @@ exports.create = (req, res, next) => {
       github.createBranchFromMaster(token, {
         name: DEVELOPMENT_BRANCH_NAME,
         repo: repo.data.name
+      })
+    )
+    .then(repoName =>
+      github.setTopics(token, {
+        names: [topic],
+        repo: repoName
       })
     )
     .then(repoName =>

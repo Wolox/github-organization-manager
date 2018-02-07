@@ -50,6 +50,16 @@ exports.createRepository = authenticated(settings => {
   });
 });
 
+exports.setTopics = authenticated(settings => {
+  return github.repos
+    .replaceTopics({
+      owner: config.common.github.organization,
+      repo: settings.repo,
+      names: settings.names
+    })
+    .then(() => settings.repo);
+});
+
 exports.createBranchFromMaster = authenticated(settings => {
   const name = settings.name;
   const repo = settings.repo;

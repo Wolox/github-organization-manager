@@ -1,4 +1,4 @@
-const GitHubApi = require('github'),
+const GitHubApi = require('@octokit/rest'),
   config = require('../../config'),
   errors = require('../errors');
 

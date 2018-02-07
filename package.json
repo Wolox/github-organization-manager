@@ -38,6 +38,7 @@
     "url": "https://github.com/Wolox/github-organization-manager/issues"
   },
   "dependencies": {
+    "@octokit/rest": "^14.0.8",
     "bcrypt": "^1.0.1",
     "bluebird": "^3.5.0",
     "body-parser": "^1.14.2",
@@ -45,7 +46,6 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "express": "^4.9.4",
-    "github": "https://github.com/mishuagopian/node-github",
     "jquery": "^3.2.1",
     "jquery.growl": "^1.3.1",
     "jwt-simple": "^0.2.0",

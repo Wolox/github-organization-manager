@@ -1,10 +1,12 @@
 const auth = require('./controllers/auth'),
   repositories = require('./controllers/repositories'),
+  home = require('./controllers/home'),
   teams = require('./controllers/teams');
 
 exports.init = app => {
   app.get('/repositories', [], repositories.new);
   app.get('/teams', [], teams.new);
+  app.get('/', [], home.index);
 
   app.get('/api/repositories/private', [], repositories.getPrivate);
   app.post('/api/repositories', [], repositories.create);

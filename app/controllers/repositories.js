@@ -44,11 +44,14 @@ exports.create = (req, res, next) => {
         repo: repo.data.name
       })
     )
-    .then(repoName =>
-      github.setTopics(token, {
-        names: [topic],
-        repo: repoName
-      })
+    .then(
+      repoName =>
+        topic
+          ? github.setTopics(token, {
+              names: [topic],
+              repo: repoName
+            })
+          : Promise.resolve(repoName)
     )
     .then(repoName =>
       github.protectBranches(token, {

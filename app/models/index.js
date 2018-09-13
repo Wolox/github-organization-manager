@@ -6,8 +6,8 @@ const fs = require('fs'),
   dbConfig = require('../../config/db'),
   db = {};
 
-const sequelize = db.url
-  ? new Sequelize(db.url)
+const sequelize = dbConfig.url
+  ? new Sequelize(dbConfig.url)
   : new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 
 fs

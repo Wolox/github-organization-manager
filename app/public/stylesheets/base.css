@@ -5,6 +5,7 @@
 
 .authentication-container {
   display: flex;
+  align-items: flex-start;
 }
 
 .authentication-step {

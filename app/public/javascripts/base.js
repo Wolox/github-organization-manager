@@ -2,9 +2,13 @@
 
 $('document').ready(function() {
   var TOKEN = 'token';
+  var TL_TOKEN = 'tl-token';
 
   if (localStorage[TOKEN]) {
     $('.authentication-token').val(localStorage[TOKEN]);
+  }
+  if (localStorage[TL_TOKEN]) {
+    $('.authentication-token').val(localStorage[TL_TOKEN]);
   }
 
   $('.authentication-button').click(function() {
@@ -29,5 +33,9 @@ $('document').ready(function() {
   $('.token-update-button').click(function() {
     var token = $('.authentication-token').val();
     localStorage.setItem(TOKEN, token);
+  });
+  $('.tl-token-update-button').click(function() {
+    var token = $('.tl-token').val();
+    localStorage.setItem(TL_TOKEN, token);
   });
 });

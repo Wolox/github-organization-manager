@@ -20,7 +20,7 @@ function debounce(func, wait, immediate) {
 };
 
 var TOKEN = 'token';
-
+var TL_TOKEN = 'tl-token';
 
 $('document').ready(function() {
   var teams = [];
@@ -39,7 +39,8 @@ $('document').ready(function() {
     method: 'GET',
     url: '/api/teams',
     data: {
-      token: localStorage[TOKEN]
+      token: localStorage[TOKEN],
+      tlToken: localStorage[TL_TOKEN]
     }
   }).then(function(res) {
     teams = res.teams;
@@ -55,13 +56,15 @@ $('document').ready(function() {
 
     var name = $('.team-name').val();
     var token = localStorage[TOKEN];
+    var tlToken = localStorage[TL_TOKEN];
 
     $.ajax({
       method: 'POST',
       url: '/api/teams',
       data: {
         name: name,
-        token: token
+        token: token,
+        tlToken: tlToken
       }
     }).always(function(resp) {
       createTeamButton.attr('disabled', false);
@@ -74,6 +77,7 @@ $('document').ready(function() {
       $.growl.notice({ message: 'Team creado!' });
     }).catch(function(err) {
       $.growl.error({ message: 'Error al crear el team. El nombre ya está en uso?' });
+      $.growl.error({ message: err.message });
     });
   });
 
@@ -108,6 +112,7 @@ $('document').ready(function() {
 
     var repositoryName = $('.team-target-repo').val();
     var token = localStorage[TOKEN];
+    var tlToken = localStorage[TL_TOKEN];
     var teamIds = repoTeamsContainer.find('input[type="checkbox"]:checked')
                                     .map((index, teamInput) => ({ id: teamInput.id.split('-')[1], name: teamInput.value }));
 
@@ -115,7 +120,7 @@ $('document').ready(function() {
       $.ajax({
         method: 'POST',
         url: '/api/repositories/' + repositoryName + '/teams/' + team.id,
-        data: { token: token }
+        data: { token: token, tlToken: tlToken }
       }).always(function(resp) {
         addTeamButton.attr('disabled', false);
       }).then(function(resp) {
@@ -135,12 +140,13 @@ $('document').ready(function() {
     var githubUsername = $('.target-user-name').val();
     var maintainer = $('.user-maintainer').is(':checked');
     var token = localStorage[TOKEN];
+    var tlToken = localStorage[TL_TOKEN];
 
     teamIds.each((index, team) => {
       $.ajax({
         method: 'POST',
         url: '/api/teams/' + team.id + '/members/' + githubUsername,
-        data: { token: token, maintainer: maintainer }
+        data: { token: token, tlToken: tlToken, maintainer: maintainer }
       }).always(function(resp) {
         addMemberButton.attr('disabled', false);
       }).then(function(resp) {

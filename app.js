@@ -7,6 +7,7 @@ const express = require('express'),
   config = require('./config'),
   routes = require('./app/routes'),
   errors = require('./app/middlewares/errors'),
+  migrationsManager = require('./migrations'),
   DEFAULT_BODY_SIZE_LIMIT = 1024 * 1024 * 10,
   DEFAULT_PARAMETER_LIMIT = 10000;
 
@@ -50,17 +51,29 @@ const init = () => {
     );
   }
 
-  routes.init(app);
-
-  app.use(errors.handle);
-  app.use(
-    rollbar.errorHandler(config.common.rollbar.accessToken, {
-      enabled: !!config.common.rollbar.accessToken,
-      environment: config.environment
+  Promise.resolve()
+    .then(() => {
+      if (!config.isTesting) {
+        return migrationsManager.check();
+      }
     })
-  );
+    .then(() => {
+      routes.init(app);
 
-  app.listen(port);
-  console.log(`Listening on port: ${port}`); // eslint-disable-line
+      app.use(errors.handle);
+      app.use(
+        rollbar.errorHandler(config.common.rollbar.accessToken, {
+          enabled: !!config.common.rollbar.accessToken,
+          environment: config.environment
+        })
+      );
+
+      app.listen(port);
+      console.log(`Listening on port: ${port}`); // eslint-disable-line
+    })
+    .catch(err => {
+      console.error(err);
+    });
 };
+
 init();

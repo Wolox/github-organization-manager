@@ -7,3 +7,8 @@ exports.repoLimitReached = {
   internalError: true,
   message: 'Repositories limit reached'
 };
+
+exports.databaseError = {
+  internalError: true,
+  message: 'Database error'
+};

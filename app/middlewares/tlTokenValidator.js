@@ -3,11 +3,11 @@ const TechLeader = require('../models').techleader;
 
 exports.validateTlToken = (req, res, next) => {
   const tlToken = (req.data && req.data.tlToken) || (req.query && req.query.tlToken);
+  logger.info(`Validating TL: ${tlToken}`);
   if (!tlToken) {
     next();
     return;
   }
-  logger.info(`Validating TL: ${tlToken}`);
   TechLeader.getByToken(tlToken)
     .then(tl => {
       if (tl) {

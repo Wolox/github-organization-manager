@@ -1,7 +1,7 @@
 const logger = require('../logger');
 const TechLeader = require('../models').techleader;
 
-exports.validateTlToken = (error, req, res, next) => {
+exports.validateTlToken = (req, res, next) => {
   logger.info(`Validating TL: ${req.data.tlToken || req.query.tlToken}`);
   if (!req.data.tlToken && !req.query.tlToken) {
     next();

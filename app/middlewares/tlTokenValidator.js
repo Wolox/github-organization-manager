@@ -2,12 +2,13 @@ const logger = require('../logger');
 const TechLeader = require('../models').techleader;
 
 exports.validateTlToken = (req, res, next) => {
-  logger.info(`Validating TL: ${req.data.tlToken || req.query.tlToken}`);
-  if (!req.data.tlToken && !req.query.tlToken) {
+  const tlToken = (req.data && req.data.tlToken) || (req.query && req.query.tlToken);
+  if (!tlToken) {
     next();
     return;
   }
-  TechLeader.getByToken(req.data.tlToken || req.query.tlToken)
+  logger.info(`Validating TL: ${tlToken}`);
+  TechLeader.getByToken(tlToken)
     .then(tl => {
       if (tl) {
         logger.info(`TL found ${tl.name}`);

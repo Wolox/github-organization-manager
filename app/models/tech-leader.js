@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const errors = require('../errors');
 
 module.exports = (sequelize, DataTypes) => {
@@ -15,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
   TechLeader.getByToken = token => {
     return TechLeader.findOne({ where: { token } }).catch(err => {
-      console.error(err);
+      logger.error(err);
       throw errors.databaseError;
     });
   };

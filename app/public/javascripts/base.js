@@ -8,7 +8,7 @@ $('document').ready(function() {
     $('.authentication-token').val(localStorage[TOKEN]);
   }
   if (localStorage[TL_TOKEN]) {
-    $('.authentication-token').val(localStorage[TL_TOKEN]);
+    $('.tl-token').val(localStorage[TL_TOKEN]);
   }
 
   $('.authentication-button').click(function() {

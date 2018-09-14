@@ -6,6 +6,7 @@ const express = require('express'),
   dotenv = require('dotenv').config(),
   config = require('./config'),
   routes = require('./app/routes'),
+  logger = require('./app/logger'),
   errors = require('./app/middlewares/errors'),
   migrationsManager = require('./migrations'),
   DEFAULT_BODY_SIZE_LIMIT = 1024 * 1024 * 10,
@@ -69,10 +70,10 @@ const init = () => {
       );
 
       app.listen(port);
-      console.log(`Listening on port: ${port}`); // eslint-disable-line
+      logger.info(`Listening on port: ${port}`); // eslint-disable-line
     })
     .catch(err => {
-      console.error(err);
+      logger.error(err);
     });
 };
 

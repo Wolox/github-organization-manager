@@ -1,4 +1,5 @@
 const github = require('../services/github'),
+  logger = require('../logger'),
   config = require('../../config'),
   errors = require('../errors');
 
@@ -9,6 +10,8 @@ exports.new = (req, res, next) => {
 
 exports.index = (req, res, next) => {
   const token = req.query.token;
+
+  logger.info(`Searching teams: ${req.query}`);
 
   github
     .getTeams(token)

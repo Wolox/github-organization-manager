@@ -12,8 +12,12 @@ exports.validateTlToken = (req, res, next) => {
     .then(tl => {
       if (tl) {
         logger.info(`TL found ${tl.name}`);
-        req.data.token = process.env.ADMIN_TOKEN;
-        req.query.token = process.env.ADMIN_TOKEN;
+        if (req.data) {
+          req.data.token = process.env.ADMIN_TOKEN;
+        }
+        if (req.query) {
+          req.query.token = process.env.ADMIN_TOKEN;
+        }
         next();
       } else {
         logger.info('TL not found');

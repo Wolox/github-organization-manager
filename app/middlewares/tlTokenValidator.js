@@ -17,7 +17,7 @@ exports.validateTlToken = (error, req, res, next) => {
       }
     })
     .catch(err => {
-      console.err(err);
+      console.error(err);
       res.status(500);
       res.end();
     });

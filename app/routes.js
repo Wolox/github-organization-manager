@@ -11,7 +11,7 @@ exports.init = app => {
 
   app.get('/api/repositories/private', [], repositories.getPrivate);
   app.post('/api/repositories', [], repositories.create);
-  app.post('/api/repositories/:repo/teams/:teamId', [], teams.addTeamToRepo);
+  app.post('/api/repositories/:repo/teams/:teamId', [tlTokenValidator.validateTlToken], teams.addTeamToRepo);
 
   app.get('/api/teams', [tlTokenValidator.validateTlToken], teams.index);
   app.post('/api/teams', [tlTokenValidator.validateTlToken], teams.create);

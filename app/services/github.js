@@ -1,5 +1,6 @@
 const GitHubApi = require('@octokit/rest'),
   config = require('../../config'),
+  logger = require('../logger'),
   errors = require('../errors');
 
 const github = new GitHubApi({
@@ -42,58 +43,103 @@ exports.createRepository = authenticated(settings => {
   const name = settings.name;
   const privateRepo = settings.privateRepo;
 
-  return github.repos.createForOrg({
-    auto_init: true,
-    org: config.common.github.organization,
-    name,
-    private: privateRepo
-  });
+  logger.info(`Creating repo for settings: ${JSON.stringify(settings)}`);
+  return github.repos
+    .createForOrg({
+      auto_init: true,
+      org: config.common.github.organization,
+      name,
+      private: privateRepo
+    })
+    .then(resp => {
+      logger.info(`Creating repo for settings: ${JSON.stringify(resp.data)}`);
+      return resp;
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 });
 
 exports.setTopics = authenticated(settings => {
+  logger.info(`Adding topics: ${JSON.stringify(settings)}`);
   return github.repos
     .replaceTopics({
       owner: config.common.github.organization,
       repo: settings.repo,
       names: settings.names
     })
-    .then(() => settings.repo);
+    .then(resp => {
+      logger.info(`Topics result: ${JSON.stringify(resp.data)}`);
+      return settings.repo;
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 });
 
 exports.createBranchFromMaster = authenticated(settings => {
   const name = settings.name;
   const repo = settings.repo;
 
+  logger.info(`Create Branch From Master: ${JSON.stringify(settings)}`);
+  logger.info('Getting master reference');
   return getReference({
     repo,
     name: 'master'
-  }).then(master =>
-    github.gitdata
-      .createReference({
-        owner: config.common.github.organization,
-        ref: `refs/heads/${name}`,
-        repo,
-        sha: master.data.object.sha
-      })
-      .then(() => repo)
-  );
+  })
+    .then(master => {
+      logger.info('Creating reference');
+      return github.gitdata
+        .createReference({
+          owner: config.common.github.organization,
+          ref: `refs/heads/${name}`,
+          repo,
+          sha: master.data.object.sha
+        })
+        .then(resp => {
+          logger.info('Reference created');
+          return repo;
+        })
+        .catch(err => {
+          logger.error(err);
+          return Promise.reject(err);
+        });
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 });
 
 exports.defaultBranch = authenticated(settings => {
   const name = settings.name;
   const repo = settings.repo;
 
-  return github.repos.edit({
-    default_branch: name,
-    owner: config.common.github.organization,
-    name: repo,
-    repo
-  });
+  logger.info(`Setting default branch: ${JSON.stringify(settings)}`);
+  return github.repos
+    .edit({
+      default_branch: name,
+      owner: config.common.github.organization,
+      name: repo,
+      repo
+    })
+    .then(resp => {
+      logger.info('Successfully set default branch');
+      return resp;
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 });
 
 exports.protectBranches = authenticated(settings => {
   const branches = settings.branches;
   const repo = settings.repo;
+
+  logger.info(`Protecting branches: ${JSON.stringify(settings)}`);
 
   if (branches && branches.length) {
     return Promise.all(
@@ -113,14 +159,32 @@ exports.protectBranches = authenticated(settings => {
           restrictions: null
         })
       )
-    ).then(() => repo);
+    )
+      .then(() => {
+        logger.info('Successfully protected branches');
+        return repo;
+      })
+      .catch(err => {
+        logger.error(err);
+        return Promise.reject(err);
+      });
   } else {
     return Promise.reject(errors.noBranchesSentToProtect);
   }
 });
 
 exports.getPrivateReposCount = (token, page = 1) => {
-  return exports.getPrivateRepos(token, page).then(repos => repos.length);
+  logger.info('Getting private repos count');
+  return exports
+    .getPrivateRepos(token, page)
+    .then(repos => {
+      logger.info(`Successfully got count: ${repos.length}`);
+      return repos.length;
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 };
 
 exports.getPrivateRepos = (token, page = 1) => {
@@ -145,6 +209,8 @@ exports.getPrivateRepos = (token, page = 1) => {
 exports.defaultTeams = authenticated(settings => {
   const repo = settings.repo;
 
+  logger.info(`Adding default teams: ${JSON.stringify(settings)}`);
+
   return Promise.all([
     github.orgs.addTeamRepo({
       id: 2543535, // calidad
@@ -164,7 +230,15 @@ exports.defaultTeams = authenticated(settings => {
       repo,
       permission: 'admin'
     })
-  ]).then(() => repo);
+  ])
+    .then(() => {
+      logger.info('Successfully added teams');
+      return repo;
+    })
+    .catch(err => {
+      logger.error(err);
+      return Promise.reject(err);
+    });
 });
 
 exports.createTeam = authenticated(settings =>

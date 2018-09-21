@@ -38,10 +38,9 @@ exports.create = (req, res, next) => {
         return Promise.reject(errors.repoLimitReached);
       }
     })
-    .then(repo =>
-      github.createBranchFromMaster(token, {
-        name: DEVELOPMENT_BRANCH_NAME,
-        repo: repo.data.name
+    .then(repoName =>
+      github.defaultTeams(token, {
+        repo: repoName
       })
     )
     .then(
@@ -53,14 +52,15 @@ exports.create = (req, res, next) => {
             })
           : Promise.resolve(repoName)
     )
-    .then(repoName =>
-      github.protectBranches(token, {
-        branches: ['master', DEVELOPMENT_BRANCH_NAME],
-        repo: repoName
+    .then(repo =>
+      github.createBranchFromMaster(token, {
+        name: DEVELOPMENT_BRANCH_NAME,
+        repo: repo.data.name
       })
     )
     .then(repoName =>
-      github.defaultTeams(token, {
+      github.protectBranches(token, {
+        branches: ['master', DEVELOPMENT_BRANCH_NAME],
         repo: repoName
       })
     )

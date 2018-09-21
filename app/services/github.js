@@ -52,7 +52,7 @@ exports.createRepository = authenticated(settings => {
       private: privateRepo
     })
     .then(resp => {
-      logger.info(`Creating repo for settings: ${JSON.stringify(resp.data)}`);
+      logger.info('Created repo Successfully');
       return resp;
     })
     .catch(err => {
@@ -70,7 +70,7 @@ exports.setTopics = authenticated(settings => {
       names: settings.names
     })
     .then(resp => {
-      logger.info(`Topics result: ${JSON.stringify(resp.data)}`);
+      logger.info('Topics added');
       return settings.repo;
     })
     .catch(err => {

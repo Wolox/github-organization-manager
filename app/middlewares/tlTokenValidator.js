@@ -1,6 +1,14 @@
 const logger = require('../logger');
 const TechLeader = require('../models').techleader;
 
+exports.conditionalValidateTlToken = cond => (req, res, next) => {
+  if (cond(req)) {
+    exports.validateTlToken(req, res, next);
+  } else {
+    next();
+  }
+};
+
 exports.validateTlToken = (req, res, next) => {
   const tlToken = (req.body && req.body.tlToken) || (req.query && req.query.tlToken);
   if (!tlToken) {

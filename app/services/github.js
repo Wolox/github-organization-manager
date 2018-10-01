@@ -10,11 +10,16 @@ const github = new GitHubApi({
   timeout: 5000
 });
 
-const init = token =>
-  github.authenticate({
-    type: 'oauth',
-    token
-  });
+const init = token => {
+  try {
+    return github.authenticate({
+      type: 'oauth',
+      token
+    });
+  } catch (e) {
+    logger.error(e);
+  }
+};
 
 const getReference = settings => {
   return github.gitdata.getReference({
@@ -25,11 +30,10 @@ const getReference = settings => {
 };
 
 const shouldFetchAnotherPage = response => {
-  const nextLink = response.meta.link.substring(
-    response.meta.link.indexOf('<') + 1,
-    response.meta.link.indexOf('>')
-  );
-  return nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1;
+  const nextLink = response.meta.link
+    ? response.meta.link.substring(response.meta.link.indexOf('<') + 1, response.meta.link.indexOf('>'))
+    : '';
+  return nextLink.length && nextLink.indexOf('?page=1') === -1 && nextLink.indexOf('&page=1') === -1;
 };
 
 const authenticated = wrappedFunction => {

@@ -2,6 +2,7 @@
 
 $('document').ready(function() {
   var TOKEN = 'token';
+  var TL_TOKEN = 'tl-token';
 
   $('.repository-fork').on('change', function() {
     var privateCheckbox = $('.repository-private');
@@ -18,10 +19,11 @@ $('document').ready(function() {
   fetchRepositoriesButton.on('click', function() {
     fetchRepositoriesButton.attr('disabled', true);
     var token = localStorage[TOKEN];
+    var tlToken = localStorage[TL_TOKEN]
     $.ajax({
       method: 'GET',
       url: '/api/repositories/private',
-      data: { token: token }
+      data: { token: token, tlToken: tlToken }
     }).always(function() {
       fetchRepositoriesButton.attr('disabled', false);
     }).then(function(res) {
@@ -44,6 +46,7 @@ $('document').ready(function() {
     var fork = $('.repository-fork').is(':checked');
     var tech = $('input[name=tech]:checked').val();
     var token = localStorage[TOKEN];
+    var tlToken = localStorage[TL_TOKEN];
     var repositorycreationMessages = 'repository-creation-messages';
     var repositoryCreateButton = $(this);
 
@@ -59,7 +62,8 @@ $('document').ready(function() {
           topic: tech,
           private: priv,
           fork: fork,
-          token: token
+          token: token,
+          tlToken: tlToken
         }
       }).always(function() {
         repositoryCreateButton.attr('disabled', false);

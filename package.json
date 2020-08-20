@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^14.0.8",
-    "bcrypt": "^1.0.1",
+    "bcrypt": "^5.0.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.14.2",
     "dotenv": "^4.0.0",
